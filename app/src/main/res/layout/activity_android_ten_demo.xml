@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.chrc.kotlindemo.activity.AndroidTenDemoActivity">
+
+    <TextView
+        android:id="@+id/tv_get_pic"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="获取图片"
+        android:gravity="center"
+        android:background="#ff0000"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_pick_file"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="选择文件"
+        android:gravity="center"
+        android:background="#ff0000"
+        app:layout_constraintTop_toBottomOf="@+id/tv_get_pic"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_create_old_file"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="老的newfile"
+        android:gravity="center"
+        android:background="#ff0000"
+        app:layout_constraintTop_toBottomOf="@+id/tv_pick_file"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_create_new_file"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="android 11 newfile"
+        android:gravity="center"
+        android:background="#ff0000"
+        app:layout_constraintTop_toBottomOf="@+id/tv_create_old_file"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_request_permission"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="权限申请"
+        android:gravity="center"
+        android:background="#ff0000"
+        app:layout_constraintTop_toBottomOf="@+id/tv_create_new_file"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
