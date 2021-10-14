@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/afragment">
+
+<!--   navigation的xml的id-->
+<!--    android:id="@+id/nav_graph"-->
+<!--    默认从afragment显示-->
+<!--    app:startDestination="@id/afragment"-->
+<!--    tools:ignore="UnusedNavigation">-->
+    <!--action申明-->
+    <action
+        android:id="@+id/to_afragment"
+        app:destination="@+id/bfragment"/>
+
+<!--    <action-->
+<!--        android:id="@+id/to_afragment"-->
+<!--        app:destination="@+id/bfragment"-->
+<!--        app:enterAnim="@anim/one_to_more_fragment_anim_in"-->
+<!--        app:popExitAnim="@anim/one_to_more_fragment_anim_out"/>-->
+
+    <fragment
+        android:id="@id/afragment"
+        android:name="com.chrc.kotlindemo.fragment.FirstOneToMoreFragment"
+        app:destination="@+id/afragment">
+
+        <!--注意这里我们静态申明在afragment中,所以我们只有在AFragment中才可以getArguments().getString("name")获取到这个 from xml argments 的值-->
+        <argument android:name="name" android:defaultValue="first"/>
+        <argument android:name="color" android:defaultValue="#ff0000"/>
+
+    </fragment>
+
+    <fragment
+        android:id="@id/bfragment"
+        android:name="com.chrc.kotlindemo.fragment.FirstOneToMoreFragment"
+        app:destination="@+id/afragment">
+
+        <argument
+            android:name="name"
+            app:argType="string"
+            android:defaultValue="default value"/>
+    </fragment>
+</navigation>

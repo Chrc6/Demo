@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <!--信任所有的系统证书-->
+            <certificates src="system" />
+<!--            &lt;!&ndash;信任所有用户安装的证书&ndash;&gt;-->
+<!--            <certificates src="user" />-->
+        </trust-anchors>
+    </base-config>
+
+    <debug-overrides>
+<!--        buldType中的debuggable为true时生效-->
+        <trust-anchors>
+            <certificates src="system"/>
+            <certificates src="user"/>
+        </trust-anchors>
+    </debug-overrides>
+
+</network-security-config>

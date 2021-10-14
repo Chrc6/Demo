@@ -1,14 +1,16 @@
 package com.chrc.kotlindemo.activity
 
+import android.content.Intent
 import android.content.pm.PermissionInfo
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.chrc.demo.R
 import com.chrc.kotlindemo.PermissionUtil
-import com.chrc.kotlindemo.kt.Person
 import com.chrc.kotlindemo.kt.Studen
-import java.lang.Exception
 
 class PermissionTestDemoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,6 +25,23 @@ class PermissionTestDemoActivity : AppCompatActivity() {
     private fun checkInstallApp() {
         var packageName = "com.tencent.mm"
         Log.d("installapp===", "packageName = $packageName has install = ${PermissionUtil.isInstallApp(this, packageName)}")
+
+        try {
+            var installedPackages = packageManager.getInstalledPackages(0)
+
+            var parse = Uri.parse("file://${Environment.getExternalStorageDirectory().absolutePath}/tingshu/heiftojpeg/")
+            var intent: Intent? = null
+            intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { //如果是4.4及以上版本
+                Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
+            } else {
+                Intent(Intent.ACTION_MEDIA_MOUNTED)
+            }
+            intent.data = parse
+            sendBroadcast(intent)
+        } catch (e: Exception) {
+            Log.d("installapp===", "error="+e.fillInStackTrace())
+            e.printStackTrace()
+        }
     }
 
     private fun test() {

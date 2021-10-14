@@ -1,0 +1,184 @@
+
+def writeNavFile() {
+    def rootProjectPath = project.getRootDir().absolutePath
+    def navigationFileDirPath = "${project.projectDir.absolutePath}/src/main/res/navigation"
+    def buildAnnotationFilePath = "${project.buildDir.absolutePath}/generated/source/kapt/debug/com/netease/qa/annotationlib/generated/frouterprotocol.java"
+    def navigationXmlFile = "${navigationFileDirPath}/all_graph_navigation.xml"
+//    println("task.gradle....${project.projectDir.absolutePath}\n${project.buildDir}")
+
+    def gradleProjectDir = project.file(navigationFileDirPath)
+    if (!gradleProjectDir.exists()) {
+        gradleProjectDir.mkdirs()
+    }
+
+    def configFile = project.file(buildAnnotationFilePath)
+    if (configFile != null && configFile.exists()) {
+//        println("task.gradle.................generate file read success......................")
+    }  else {
+//        println("task.gradle.................file"+(configFile==null)+"......................")
+        return
+    }
+
+    def navFile = project.file(navigationXmlFile)
+    if (navFile.exists()) {
+        navFile.delete()
+    }
+    println("task.gradle.................gradle writnavfile start......................")
+
+    def sw = new StringWriter()
+    def navHeadStr = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<navigation xmlns:android=\"http://schemas.android.com/apk/res/android\"\n" +
+            "    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\n" +
+            "xmlns:tools=\"http://schemas.android.com/tools\"\n" +
+            "    android:id=\"@+id/nav_ject_main\"\n" +
+            "    app:startDestination=\"@id/titleFragment\">\n"
+    def navEndStr = "</navigation>"
+    sw.append(navHeadStr + "\n")
+    parseProcessorFile(sw, configFile)
+    sw.append(navEndStr)
+
+//    println("TestPlugin===  sw=${sw.toString()}")
+    if (!sw.toString().isEmpty()) {
+        navFile.createNewFile()
+        navFile.write(sw.toString())
+    }
+    println("task.gradle.................gradle writnavfile finish......................")
+}
+
+def parseProcessorFile(StringWriter sw, File configFile) {
+    def configList = [""]
+    configFile.eachLine { line ->
+        configList.add(line)
+    }
+    configList.forEach {
+        if (it != null && !it.isEmpty()) {
+            it = it.replace("//", "")
+            it = it.replace("[", "")
+            it = it.replace("]", "")
+            def firstIndex = it.indexOf(":")
+            it = it.substring(firstIndex+1, it.length())
+            println("TestPlugin=== it="+it)
+            def labelList = it.split(",")
+//            //test data
+//            def labelList = ["action_id:to_score_fragment", "action_destination:scoreFragment",
+//                             "fragment_id:nav_ject_main", "fragment_name:com.netease.qa.jetpack.page.fragment.TitleFragment",
+//                             "fragment_arguments_name:title",
+//                             "fragment_arguments_argType:string",
+//                             "fragment_arguments_defaultValue:test"]
+
+            def actionLabelList = []
+            def fragmentLabelList = []
+            labelList.findAll() {
+                if (it.startsWith("action_")) {
+                    actionLabelList.add(it)
+                } else {
+                    fragmentLabelList.add(it)
+                }
+            }
+            addAction(sw, actionLabelList)
+//            println("TestPlugin===  sw=${sw.toString()}")
+            addFragment(sw, fragmentLabelList)
+        }
+    }
+}
+
+def addAction(StringWriter sw, List<String> actionLabelList) {
+    if (actionLabelList.isEmpty()) {
+        return
+    }
+    sw.append("<action\n")
+//    println("TestPlugin===  actionLabelList=${actionLabelList.toString()} ")
+    actionLabelList.findAll() {
+        def actionArray = it.split(":")
+//        println("TestPlugin===" + actionArray.toString())
+        if (actionArray == null) {
+            throw Exception("注解错误")
+        } else {
+            actionArray = actionArray.toList()
+            if (it.contains("id")) {
+                sw.append("android:id=\"@+id/${actionArray[1]}\"\n")
+            } else {
+                sw.append("app:destination=\"@+id/${actionArray[1]}\"\n")
+            }
+        }
+    }
+    sw.append("/>")
+}
+def addFragment(StringWriter sw, List<String> fragmentLabelList) {
+    sw.append("<fragment\n")
+    def innerSw = new StringWriter()
+    fragmentLabelList.findAll() {
+        def fragmentArray = it.split(":")
+        if (fragmentArray == null) {
+            throw Exception("注解或参数名错误")
+        }
+        def fragmentKey = fragmentArray[0]
+        def fragmentKeyArray = fragmentKey.split("_")
+//        println("TestPlugin===  fragmentKeyArray data=${fragmentKeyArray.toString()}")
+        if (fragmentKeyArray == null || fragmentKeyArray.size() < 2) {
+            throw Exception("注解或参数名错误")
+        }
+        fragmentKeyArray = fragmentKeyArray.toList()
+//        println("TestPlugin===  fragmentKeyArray length=${fragmentKeyArray.size()}")
+        if (fragmentKeyArray.size() < 3) {
+            if (fragmentKeyArray.contains("id")) {
+                sw.append("android:id=\"@+id/${fragmentArray[1]}\"\n")
+            } else if (fragmentKeyArray.contains("name")) {
+                sw.append("android:name=\"${fragmentArray[1]}\"\n")
+            }
+        } else {
+            if (innerSw.toString().isEmpty()) {
+                innerSw.append("<argument \n")
+            }
+            if (fragmentKeyArray.contains("name")) {
+                innerSw.append("android:name=\"${fragmentArray[1]}\"\n")
+            } else if (fragmentKeyArray.contains("argType")) {
+                innerSw.append("app:argType=\"${fragmentArray[1]}\"\n")
+            } else if (fragmentKeyArray.contains("defaultValue")) {
+                innerSw.append("android:defaultValue=\"${fragmentArray[1]}\"\n")
+            }
+        }
+    }
+    sw.append(">")
+    innerSw.append("/>")
+    sw.append(innerSw.toString())
+//    println("TestPlugin===  innerSw=${innerSw.toString()}")
+    sw.append("</fragment>")
+}
+
+task checkOsTask {
+    //        project.tasks.findAll {
+//            if ("assemble" == it.name) {
+//                it.doLast {
+//                    println("注解=====${it.name} ==")
+//                }
+//            }
+//            if (it.name.startsWith("assemble")) {
+//                it.doLast {
+//                    println("注解=====${it.name} startsWith")
+//                }
+//                return
+//            }
+//            println("注解=== tasks ${it.name}")
+//        }
+    project.gradle.addListener(new TaskActionListener() {
+        @Override
+        void beforeActions(Task task) {
+
+        }
+        @Override
+        void afterActions(Task task) {
+            if (task.name.startsWith("compile")
+                    && task.name.endsWith("Kotlin")) {
+                //写入文件
+                println("注解====TaskActionListener afterActions ${task.name}")
+                writeNavFile()
+            }
+        }
+    })
+//    project.gradle.startParameter.taskNames.findAll {
+//        println   ("注解====taskNames before ${it}")
+//        if (it.toUpperCase().startsWith("ASSEMBLE")) {
+//            println("注解====taskNames ${it}")
+//        }
+//    }
+}

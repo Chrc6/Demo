@@ -1,0 +1,42 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+def ARTIFACT_ID = 'dependency-createfile-plugin'
+def VERSION_NAME = '1.0.1'
+def GROUP_ID = 'com.chrc.gradle'
+
+repositories {
+    mavenCentral()
+//    add buildscript.repositories.getByName("maven-main-cache")
+}
+
+dependencies {
+    implementation 'commons-validator:commons-validator:1.4.0'
+    implementation group: 'org.javassist', name: 'javassist', version: '3.23.1-GA'
+    //gradle sdk
+    implementation gradleApi()
+    //groovy sdk
+    implementation localGroovy()
+}
+
+uploadArchives {
+//    configuration = configurations.archives
+    repositories {
+        mavenDeployer {
+
+//            snapshotRepository(url: MAVEN_REPO_SNAPSHOT_URL) {
+//                authentication(userName: NEXUS_USERNAME, password: NEXUS_PASSWORD)
+//            }
+
+            repository(url: uri('/Users/rc/plugin'))
+
+            pom.project {
+                version VERSION_NAME //版本名称 上传是不能和之前的一样，否则上传失败
+                artifactId ARTIFACT_ID  //别名
+                groupId GROUP_ID  //填包名
+                packaging 'jar' //填写aar
+                description 'test plugin' //更新描述
+            }
+        }
+    }
+}
