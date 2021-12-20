@@ -26,6 +26,7 @@ private const val ARG_PARAM2 = "param2"
  */
 
 @FRouterClass(
+        startDestination = "titleFragment",
         action_id = "to_title_fragment",
         action_destination = "titleFragment",
         fragment_id = "titleFragment",

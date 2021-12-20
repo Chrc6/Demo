@@ -26,6 +26,10 @@ import javax.tools.Diagnostic;
  * @author : chrc
  * date   : 10/13/21  10:38 AM
  * desc   :
+ * https://www.imooc.com/article/280634
+ * https://www.jianshu.com/p/3052fa51ee95
+ * https://www.jianshu.com/p/8dc7a49d86be
+ * https://blog.csdn.net/kaifa1321/article/details/79683246
  */
 @AutoService(Processor.class)
 public class FRouterAnnotationProcessor extends AbstractProcessor {
@@ -73,19 +77,39 @@ public class FRouterAnnotationProcessor extends AbstractProcessor {
 
         StringBuilder sb = new StringBuilder();
         sb.append("[");
-        sb.append("action_id").append(":").append(implAnnotation.action_id()).append(",");
-        sb.append("action_destination").append(":").append(implAnnotation.action_destination()).append(",");
-        sb.append("fragment_id").append(":").append(implAnnotation.fragment_id()).append(",");
-        if (!implAnnotation.fragment_name().isEmpty()) {
-            sb.append("fragment_name").append(":").append(implAnnotation.fragment_name()).append(",");
-        } else {
-            sb.append("fragment_name").append(":").append(implClassName.packageName() + "." + implClassName.simpleName()).append(",");
-        }
-        sb.append("fragment_arguments_name").append(":").append(implAnnotation.fragment_arguments_name()).append(",");
-        sb.append("fragment_arguments_argType").append(":").append(implAnnotation.fragment_arguments_argType()).append(",");
-        sb.append("fragment_arguments_defaultValue").append(":").append(implAnnotation.fragment_arguments_defaultValue());
+//        sb.append("action_id").append(":").append(implAnnotation.action_id()).append(",");
+//        sb.append("action_destination").append(":").append(implAnnotation.action_destination()).append(",");
+//        sb.append("fragment_id").append(":").append(implAnnotation.fragment_id()).append(",");
+//        if (!implAnnotation.fragment_name().isEmpty()) {
+//            sb.append("fragment_name").append(":").append(implAnnotation.fragment_name()).append(",");
+//        } else {
+//            sb.append("fragment_name").append(":").append(implClassName.packageName() + "." + implClassName.simpleName()).append(",");
+//        }
+//        sb.append("fragment_arguments_name").append(":").append(implAnnotation.fragment_arguments_name()).append(",");
+//        sb.append("fragment_arguments_argType").append(":").append(implAnnotation.fragment_arguments_argType()).append(",");
+//        sb.append("fragment_arguments_defaultValue").append(":").append(implAnnotation.fragment_arguments_defaultValue());
+
+        addKeyAndValue(sb, "startDestination", implAnnotation.startDestination(), false);
+        addKeyAndValue(sb, "action_id", implAnnotation.action_id(), false);
+        addKeyAndValue(sb, "action_destination", implAnnotation.action_destination(), false);
+        addKeyAndValue(sb, "fragment_id", implAnnotation.fragment_id(), false);
+        addKeyAndValue(sb, "fragment_name", implAnnotation.fragment_name().isEmpty() ? implClassName.packageName() + "." + implClassName.simpleName()
+                :implAnnotation.fragment_name(), false);
+        addKeyAndValue(sb, "fragment_arguments_name", implAnnotation.fragment_arguments_name(), false);
+        addKeyAndValue(sb, "fragment_arguments_argType", implAnnotation.fragment_arguments_argType(), false);
+        addKeyAndValue(sb, "fragment_arguments_defaultValue", implAnnotation.fragment_arguments_defaultValue(), true);
         sb.append("]").append("\n");
         return new FRouterAnnotationInfo(implClassName.simpleName(), sb.toString());
+    }
+
+    private StringBuilder addKeyAndValue(StringBuilder sb, String key, String value, boolean isLast) {
+        if (key != null && !key.isEmpty() && value != null && !value.isEmpty()) {
+            sb.append(key).append(":").append(value);
+            if (!isLast) {
+                sb.append(",");
+            }
+        }
+        return sb;
     }
 
     @Override

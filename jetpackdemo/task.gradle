@@ -1,4 +1,8 @@
-
+/**
+ * 待解决问题：
+ * 1.动态配置module路径：配置在gradle.properties中
+ * @return
+ */
 def writeNavFile() {
     def rootProjectPath = project.getRootDir().absolutePath
     def navigationFileDirPath = "${project.projectDir.absolutePath}/src/main/res/navigation"
@@ -26,14 +30,24 @@ def writeNavFile() {
     println("task.gradle.................gradle writnavfile start......................")
 
     def sw = new StringWriter()
+    def contentSw = new StringWriter()
+
+    def navEndStr = "</navigation>"
+    def startDestination = parseProcessorFile(contentSw, configFile)
     def navHeadStr = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<navigation xmlns:android=\"http://schemas.android.com/apk/res/android\"\n" +
             "    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\n" +
-            "xmlns:tools=\"http://schemas.android.com/tools\"\n" +
-            "    android:id=\"@+id/nav_ject_main\"\n" +
-            "    app:startDestination=\"@id/titleFragment\">\n"
-    def navEndStr = "</navigation>"
+            "xmlns:tools=\"http://schemas.android.com/tools\"\n"
+//    +
+//            "    android:id=\"@+id/nav_ject_main\"\n" +
+//            "    app:startDestination=\"@id/titleFragment\">\n"
+    if (!startDestination.isEmpty()) {
+        navHeadStr = navHeadStr + "    app:startDestination=\"@id/${startDestination}\">\n"
+    } else {
+        navHeadStr = navHeadStr + ">"
+    }
+    println("navHeadStr=${navHeadStr}")
     sw.append(navHeadStr + "\n")
-    parseProcessorFile(sw, configFile)
+    sw.append(contentSw.toString() + "\n")
     sw.append(navEndStr)
 
 //    println("TestPlugin===  sw=${sw.toString()}")
@@ -49,11 +63,10 @@ def parseProcessorFile(StringWriter sw, File configFile) {
     configFile.eachLine { line ->
         configList.add(line)
     }
+    def startDestination = ""
     configList.forEach {
         if (it != null && !it.isEmpty()) {
-            it = it.replace("//", "")
-            it = it.replace("[", "")
-            it = it.replace("]", "")
+            it = it.replace("//", "").replace("[", "").replace("]", "")
             def firstIndex = it.indexOf(":")
             it = it.substring(firstIndex+1, it.length())
             println("TestPlugin=== it="+it)
@@ -67,8 +80,16 @@ def parseProcessorFile(StringWriter sw, File configFile) {
 
             def actionLabelList = []
             def fragmentLabelList = []
+//            actionLabelList.clear()
+//            fragmentLabelList.clear()
             labelList.findAll() {
-                if (it.startsWith("action_")) {
+                if (it.contains("startDestination")) {
+                    if (startDestination.isEmpty()) {
+                        startDestination = it.split(":")[1]
+                    } else {
+                        throw new Exception("more than startDestination config")
+                    }
+                } else if (it.startsWith("action_")) {
                     actionLabelList.add(it)
                 } else {
                     fragmentLabelList.add(it)
@@ -79,6 +100,7 @@ def parseProcessorFile(StringWriter sw, File configFile) {
             addFragment(sw, fragmentLabelList)
         }
     }
+    return startDestination
 }
 
 def addAction(StringWriter sw, List<String> actionLabelList) {
@@ -115,7 +137,7 @@ def addFragment(StringWriter sw, List<String> fragmentLabelList) {
         def fragmentKeyArray = fragmentKey.split("_")
 //        println("TestPlugin===  fragmentKeyArray data=${fragmentKeyArray.toString()}")
         if (fragmentKeyArray == null || fragmentKeyArray.size() < 2) {
-            throw Exception("注解或参数名错误")
+            throw Exception("注解或参数名错误 it=${it}")
         }
         fragmentKeyArray = fragmentKeyArray.toList()
 //        println("TestPlugin===  fragmentKeyArray length=${fragmentKeyArray.size()}")
@@ -139,7 +161,9 @@ def addFragment(StringWriter sw, List<String> fragmentLabelList) {
         }
     }
     sw.append(">")
-    innerSw.append("/>")
+    if (innerSw.toString().contains("<argument")) {
+        innerSw.append("/>")
+    }
     sw.append(innerSw.toString())
 //    println("TestPlugin===  innerSw=${innerSw.toString()}")
     sw.append("</fragment>")

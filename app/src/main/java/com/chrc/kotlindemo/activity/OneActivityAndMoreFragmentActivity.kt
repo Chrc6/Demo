@@ -30,6 +30,8 @@ import com.chrc.kotlindemo.fragment.FirstOneToMoreFragmentDirections
  * name不为null，flags为0，弹出栈中该Fragment之上的Fragment；
  * name不为null，flags为1，弹出栈中该Fragment和之上的Fragment；
  * https://blog.csdn.net/ganduwei/article/details/80049430
+ *
+ * https://mp.weixin.qq.com/s/gPmAvylpDJj148Wtvz5pbQ
  */
 class OneActivityAndMoreFragmentActivity : AppCompatActivity(), View.OnClickListener {
 

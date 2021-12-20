@@ -19,14 +19,14 @@ import java.lang.annotation.Target;
 //@Documented
 //@Inherited
 public @interface FRouterClass {
-    // 接口类描述
-    String action_id();
-    String action_destination();
-    String fragment_id();
+    String startDestination() default "";
+    String action_id() default "";
+    String action_destination() default "";
+    String fragment_id() default "";
     String fragment_name() default "";
-    String fragment_arguments_name();
-    String fragment_arguments_argType();
-    String fragment_arguments_defaultValue();
+    String fragment_arguments_name() default "";
+    String fragment_arguments_argType() default "";
+    String fragment_arguments_defaultValue() default "";
 
     String methodCollection() default  "action_id,action_destination,fragment_id,fragment_name,fragment_arguments_name,fragment_arguments_argType,fragment_arguments_defaultValue";
 

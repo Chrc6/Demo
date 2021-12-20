@@ -3,6 +3,7 @@ package com.netease.qa.jetpack.page.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.Navigation
 import com.netease.qa.jetpack.R
 
@@ -10,6 +11,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var preTv: TextView
     private lateinit var nextTv: TextView
+    private lateinit var fragmentContainerView: FragmentContainerView
     private var pos: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     private fun initView() {
         preTv = findViewById(R.id.tv_pre)
         nextTv = findViewById(R.id.tv_next)
+        fragmentContainerView = findViewById(R.id.fragment_container)
 
         preTv.setOnClickListener {
             if (pos != 0) {

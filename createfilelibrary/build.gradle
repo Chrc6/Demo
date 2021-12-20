@@ -2,7 +2,7 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 
 def ARTIFACT_ID = 'dependency-createfile-plugin'
-def VERSION_NAME = '1.0.1'
+def VERSION_NAME = '1.0.2'
 def GROUP_ID = 'com.chrc.gradle'
 
 repositories {
@@ -17,6 +17,9 @@ dependencies {
     implementation gradleApi()
     //groovy sdk
     implementation localGroovy()
+
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 }
 
 uploadArchives {

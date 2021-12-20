@@ -20,11 +20,12 @@ import com.netease.qa.jetpack.R;
 @FRouterClass(
         action_id="to_test_fragment",
         action_destination="testFragment",
-        fragment_id="testFragment",
+        fragment_id="testFragment")
+/*,
 //        fragment_name="com.netease.qa.jetpack.page.fragment.TestFragment",
         fragment_arguments_name="test",
         fragment_arguments_argType="string",
-        fragment_arguments_defaultValue="test")
+        fragment_arguments_defaultValue="test"*/
 public class TestFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
