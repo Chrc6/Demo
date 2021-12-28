@@ -41,4 +41,18 @@
             app:argType="string"
             android:defaultValue="default value"/>
     </fragment>
+
+    <dialog
+        android:id="@+id/my_dialog_fragment"
+        android:name="com.chrc.kotlindemo.fragment.FirstOneToMoreFragment">
+        <argument android:name="myarg" android:defaultValue="@null" />
+        <action
+            android:id="@+id/myaction"
+            app:destination="@+id/another_destination"/>
+    </dialog>
+
+<!--    <activity-->
+<!--        android:id="@+id/sampleActivityDestination"-->
+<!--        android:name="com.example.android.navigation.activity.DestinationActivity"-->
+<!--        android:label="@string/sampleActivityTitle" />-->
 </navigation>

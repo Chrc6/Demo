@@ -13,6 +13,11 @@ plugins {
 apply plugin: TestPlugin
 apply from: "../task.gradle"
 
+apply plugin: 'lightning-compile'//lightning
+lightning {
+    enableTaskTimePrint = true
+}
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"

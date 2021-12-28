@@ -1,6 +1,9 @@
 package com.netease.qa.jetpack.viemodel
 
+import android.app.Person
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 /**
@@ -13,7 +16,13 @@ class GameViewModel: ViewModel() {
         Log.i("GameViewModel==="," GameViewModel init")
     }
 
-    fun init() {
+    val persons: MutableLiveData<List<Person>> by lazy {
+        MutableLiveData<List<Person>>().apply {
+            loadPersons()
+        }
+    }
+
+    private fun loadPersons() {
 
     }
 

@@ -1,0 +1,61 @@
+/********************以下是dependency配置*****************************/
+def cusDependencies = ["com.google.android.material:material" : "1.3.0"]
+task testMap {
+    println("data=${cusDependencies.toString()} value1=${cusDependencies["androidx.lifecycle:lifecycle-livedata"]} value2=${cusDependencies["2.2.0"]}" )
+}
+
+task initDependency {
+    println("task initDependency project is null=${project==null} name=${project.name}")
+//    下面这行打开，就生效
+//    foreach(project.getChildProjects(), cusDependencies)
+//    验证更改后的数据
+//    project.getConfigurations().all { config ->
+//        config.resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+//            def moduleStr = details.requested.module.toString()
+//            def moduleStr = details.target.module.toString()
+//            if (cusDependencies.containsKey(moduleStr)) {
+//                println("initDependency after dependency module=${moduleStr}"
+//                        +  " newversion=${details.requested.getVersion()}"
+//                        +" newTarget=${details.target.toString()}")
+//            }
+//        }
+//    }
+}
+
+def foreach(Map<String, Project> projects, Map<String, String> cusDependencies)  {
+    def projectStr = ""
+    projects.each { printE ->
+        projectStr = projectStr + printE.value.name + ","
+    }
+    println("projectStr=$projectStr")
+    projects.each { entry ->
+        if (!entry.value.getChildProjects().isEmpty()) {
+            //不是module，是个文件夹
+            foreach(entry.value.getChildProjects(), cusDependencies)
+        } else {
+            println("${entry.value.name} getConfigurations")
+            entry.value.getConfigurations().all {config->
+                config.resolutionStrategy.eachDependency{ DependencyResolveDetails details ->
+//            def moduleStr = details.requested.module.toString()
+                    def moduleStr = details.target.module.toString()
+//            println("inittask group=${details.requested.getGroup()} name=${details.requested.getName()} module=${details.requested.getModule()} version=${details.requested.getVersion()}"
+//                + " mapValue=${cusDependencies[moduleStr]}"
+//                + " isContains=${cusDependencies.containsKey()}")
+                    if (cusDependencies.containsKey(moduleStr) && details.requested.getVersion() != cusDependencies[moduleStr]) {
+                        println("initDependency change dependency module=${moduleStr}"
+                                +  " oldversion=${details.requested.getVersion()} targetversion=${cusDependencies[moduleStr]}"
+                                + " target=${details.target.toString()}"
+                                +" name=${project.name}")
+//                def key = details.requested.getGroup() + "." + details.requested.getName() + ".version.default"
+//                def targetObj = moduleStr + ":${cusDependencies[moduleStr]}"
+//                details.useTarget(targetObj)
+                        details.useVersion(cusDependencies[moduleStr])
+                        println(" newVersion=${details.target.toString()}")
+                    }
+                }
+            }
+        }
+    }
+
+}
+/********************以上是dependency配置*****************************/

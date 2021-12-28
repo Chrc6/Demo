@@ -38,4 +38,12 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_play"/>
 
+    <TextView
+        android:id="@+id/tv_change_speed"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="更改倍速并重播"
+        app:layout_constraintTop_toBottomOf="@+id/exo_player_view"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

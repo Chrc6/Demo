@@ -46,6 +46,7 @@ class LiveNavRouter {
                 setEnterAnim(R.anim.one_to_more_fragment_anim_in)
                 setExitAnim(R.anim.one_to_more_fragment_anim_no_change)
                 setPopExitAnim(R.anim.one_to_more_fragment_anim_out)
+//                setPopUpTo()
             }
         }
     }

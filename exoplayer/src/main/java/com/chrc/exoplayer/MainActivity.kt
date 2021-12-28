@@ -2,7 +2,6 @@ package com.chrc.exoplayer
 
 import android.media.MediaExtractor
 import android.media.MediaFormat
-import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -11,7 +10,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.chrc.exoplayer.custom_exo_component.CustomBandwidthMeter
-import com.chrc.exoplayer.custom_exo_component.CustomRenderersFactory
 import com.chrc.exoplayer.listener.AudioRendererEventListenerImpl
 import com.chrc.exoplayer.listener.EventListenerImpl
 import com.chrc.exoplayer.listener.MedaDataOutputImpl
@@ -25,7 +23,6 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.upstream.BandwidthMeter
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
@@ -37,12 +34,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var tvPlay: TextView
     private lateinit var tvPause: TextView
+    private lateinit var tvChangeSpeed: TextView
     private lateinit var exoPlayerView: PlayerView
 
     private lateinit var player: SimpleExoPlayer
 
-//    var videoPlayUrl =  "asset:///test_lounder_and_smaller_music.mp3"
-    var videoPlayUrl = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
+    var videoPlayUrl =  "asset:///test_lounder_and_smaller_music.mp3"
+//    var videoPlayUrl = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
     //穿越女特工，嗜血太子妃
 //    var videoPlayUrl = "http://vb.wting.info/youshengxiaoshuo/chuanyuejiakong/cyntgsxtzf/lrgfwbukblt.m4a?token=fP3Ig0-sqkLP1SZKF6GjFg**_rt2JW9TnzLHzDiGw1f6YWQ**&e=1630456009095" +
 //        "&t=2&res=623371787&source=ANDROID&sign=5792e8c7e51924c697e6e19c8d48016e&d=1&ct=1630031209095&sk=-209472062"
@@ -126,9 +124,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         tvPlay = findViewById(R.id.tv_play)
         tvPause = findViewById(R.id.tv_pause)
         exoPlayerView = findViewById(R.id.exo_player_view)
+        tvChangeSpeed = findViewById(R.id.tv_change_speed)
 
         tvPlay.setOnClickListener(this)
         tvPause.setOnClickListener(this)
+        tvChangeSpeed.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -149,12 +149,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 //                    Log.i("test==="," error=${e.fillInStackTrace()}")
 //                }
             }
+            R.id.tv_change_speed -> {
+                var videoUrl = videoPlayUrl
+                var uri = Uri.parse(videoUrl)
+                val mediaDataSourceFactory: DataSource.Factory = buildDataSourceFactory(uri, true)
+                var mVideoSource = ExtractorMediaSource.Factory(mediaDataSourceFactory).createMediaSource(uri)
+
+                player.prepare(mVideoSource)
+                val playbackParameters = PlaybackParameters(2.0f, 1.0f)
+                player.playbackParameters = playbackParameters
+                player.playWhenReady = true
+            }
         }
     }
 
     private fun buildDataSourceFactory(uri: Uri?, useBandwidthMeter: Boolean): DataSource.Factory {
-        bandwidthMeter = if (useBandwidthMeter) CustomBandwidthMeter(Handler()) {
-            elapsedMs, bytes, bitrate ->
+        bandwidthMeter = if (useBandwidthMeter) CustomBandwidthMeter(Handler()) { elapsedMs, bytes, bitrate ->
             Log.i("exoplayer===bit", " buildDataSourceFactory elapsedMs=$elapsedMs bytes=$bytes bitrate=$bitrate") } else null
         return DefaultDataSourceFactory(this, bandwidthMeter, buildOkHttpDataSourceFactory(uri, bandwidthMeter))
     }
@@ -188,7 +198,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 Player.STATE_READY -> {
                     if (!playWhenReady) {
                         var bitrateEstimate = bandwidthMeter?.bitrateEstimate
-                        Log.i("exoplayer===bit"," bitrateEstimate=$bitrateEstimate")
+                        Log.i("exoplayer===bit", " bitrateEstimate=$bitrateEstimate")
                     }
                 }
             }
@@ -231,9 +241,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 }
 
 private fun String.isPhone(tag: String?) {
-    Log.i("test==="," isPhone tag=$tag")
+    Log.i("test===", " isPhone tag=$tag")
 }
 
 private fun String?.isMail(tag: String?) {
-    Log.i("test==="," isMail tag=$tag")
+    Log.i("test===", " isMail tag=$tag")
 }

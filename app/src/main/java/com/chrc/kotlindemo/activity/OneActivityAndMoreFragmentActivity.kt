@@ -199,15 +199,20 @@ class OneActivityAndMoreFragmentActivity : AppCompatActivity(), View.OnClickList
     }
 
     override fun onSupportNavigateUp(): Boolean {
+        naviIndex--
+        Log.i("onetomore===", "onSupportNavigateUp ")
         return Navigation.findNavController(this, R.id.fragment_navi_container).navigateUp()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.i("onetomore===", "onKeyDown KEYCODE_BACK")
             /**
              * fragment回退栈还有fragment可用
              */
             if (Navigation.findNavController(this, R.id.fragment_navi_container).navigateUp()) {
+                Log.i("onetomore===", "onKeyDown KEYCODE_BACK navigateUp")
+                naviIndex--
 //                return
             }
 

@@ -2,10 +2,12 @@ package com.netease.qa.jetpack.page.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.Navigation
 import com.netease.qa.jetpack.R
+import com.netease.qa.jetpack.Utils
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,6 +20,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initView()
+        Log.i("lightning==="," jetpackdemo MainActivity onCreate ")
+        Utils.printStr("MainActivity onCreate 1112")
     }
 
     private fun initView() {
