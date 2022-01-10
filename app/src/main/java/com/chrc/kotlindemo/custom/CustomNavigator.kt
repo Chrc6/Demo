@@ -1,4 +1,4 @@
-package com.chrc.demo.navigation
+package com.chrc.kotlindemo.custom
 
 import android.content.Context
 import android.os.Bundle

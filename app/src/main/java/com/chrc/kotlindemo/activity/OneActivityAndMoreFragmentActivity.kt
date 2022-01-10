@@ -14,8 +14,8 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.chrc.demo.R
-import com.chrc.demo.util.LiveNavRouter
 import com.chrc.kotlindemo.fragment.FirstOneToMoreFragment
+import com.chrc.kotlindemo.LiveNavRouter
 import com.chrc.kotlindemo.fragment.FirstOneToMoreFragmentDirections
 
 /**
@@ -94,18 +94,17 @@ class OneActivityAndMoreFragmentActivity : AppCompatActivity(), View.OnClickList
 //                var navOptons = NavigationUtil.getNavOptionsBuilder().build()
 //                navController.navigate(R.id.to_afragment, bundle, navOptons)
                 var navOptions = LiveNavRouter.getNavOptionsBuilder().build()
-//                var bundle = Bundle().apply {
-//                    putString("name", getName())
-//                    putString("color", getColor())
-//                }
+                var bundle = Bundle().apply {
+                    putString("name", getName())
+                    putString("color", getColor())
+                }
 //                LiveNavRouter.Builder()
 //                        .setViewId(R.id.fragment_navi_container)
-//                        .setActivity(this)
 //                        .setNavId(R.id.to_afragment)
 //                        .setBundle(bundle)
 //                        .setNavOptions(navOptions)
 //                        .build()
-//                        .activityJump()
+//                        .activityJump(this)
                 LiveNavRouter.Builder()
                         .setViewId(R.id.fragment_navi_container)
                         .setNavDirections(FirstOneToMoreFragmentDirections.toAfragment().apply {

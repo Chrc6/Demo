@@ -1,4 +1,4 @@
-package com.chrc.demo.util
+package com.chrc.kotlindemo
 
 import android.app.Activity
 import android.os.Bundle

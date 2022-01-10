@@ -1,4 +1,8 @@
+import com.sun.source.util.TaskEvent
+import com.sun.source.util.TaskListener
 import groovy.xml.MarkupBuilder
+import org.gradle.api.internal.project.taskfactory.TaskIdentity
+import org.gradle.execution.taskgraph.TaskListenerInternal
 
 /**
  * 待解决问题：
@@ -14,10 +18,8 @@ import groovy.xml.MarkupBuilder
  *
  * 2.action_id和fragment_id能不能只配1个
  *
- * 插件目的：根据fragment上添加注解，生成对应的navigation_annotation.xml文件，并与现有的navigation.xml合并
- * 用户行为：1.使用注解（navigation_annotation.xml） 2.没使用注解（navigation.xml） 3.从使用注解->去掉注解  4.在navigation.xml上直接修改未使用注解的类的配置
- *
- * 当前的实现，不兼容 2、3、4情况，对用户使用有一定的影响
+ * 日志：
+ * 22.01.10：插件适配safe-args
  * @return
  */
 def writeNavFile() {
@@ -25,6 +27,7 @@ def writeNavFile() {
     def navigationFileDirPath = "${project.projectDir.absolutePath}/src/main/res/navigation"
     def buildAnnotationFilePath = "${project.buildDir.absolutePath}/generated/source/kapt/debug/com/netease/qa/annotationlib/generated/frouterprotocol.java"
     def navigationXmlFile = "${navigationFileDirPath}/all_graph_navigation.xml"
+    def navigationMainXmlFile = "${navigationFileDirPath}/total_navigation.xml"
 //    println("task.gradle....${project.projectDir.absolutePath}\n${project.buildDir}")
 
     def gradleProjectDir = project.file(navigationFileDirPath)
@@ -53,7 +56,8 @@ def writeNavFile() {
     def startDestination = parseProcessorFile(contentSw, configFile)
     def navHeadStr = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<navigation xmlns:android=\"http://schemas.android.com/apk/res/android\"\n" +
             "    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\n" +
-            "xmlns:tools=\"http://schemas.android.com/tools\"\n"
+            "xmlns:tools=\"http://schemas.android.com/tools\"\n"    +
+    "    android:id=\"@+id/plugin_graph\"\n"
 //    +
 //            "    android:id=\"@+id/nav_ject_main\"\n" +
 //            "    app:startDestination=\"@id/titleFragment\">\n"
@@ -76,6 +80,10 @@ def writeNavFile() {
         navFile.createNewFile()
         navFile.write(sw.toString())
 
+//        def reader = new StringReader(navigationXmlFile)
+//        def doc = groovy.xml.DOMBuilder.parse(reader)
+//        def records = doc.documentElement
+//        println("task.gradle two  doc=${records.toString()}")
     }
     println("task.gradle.................gradle writnavfile finish......................")
 }
@@ -191,40 +199,76 @@ def addFragment(StringWriter sw, List<String> fragmentLabelList) {
     sw.append("</fragment>")
 }
 
-task checkOsTask {
-    //        project.tasks.findAll {
-//            if ("assemble" == it.name) {
-//                it.doLast {
-//                    println("注解=====${it.name} ==")
-//                }
-//            }
-//            if (it.name.startsWith("assemble")) {
-//                it.doLast {
-//                    println("注解=====${it.name} startsWith")
-//                }
-//                return
-//            }
-//            println("注解=== tasks ${it.name}")
-//        }
+def count = 1
+task cmdTask {
+    println " cmd task count=$count"
+    count++
+}
 
-    println "task.gradle--------------first"
+task checkOsTask {
+//    project.tasks.findAll {
+//        if ("assemble" == it.name) {
+//            it.doLast {
+//                println("注解=====${it.name} ==")
+//            }
+//        }
+//        if (it.name.startsWith("assemble")) {
+//            it.doLast {
+//                println("注解=====${it.name} startsWith")
+//            }
+//            return
+//        }
+//        println("注解=== tasks ${it.name} path=${it.path}")
+//    }
+
+    project.gradle.addListener(new TaskListenerInternal() {
+        @Override
+        void beforeExecute(TaskIdentity<?> taskIdentity) {
+            if (taskIdentity.name.startsWith("writeDebugApplicationId")
+                && taskIdentity.identityPath.contains("jetpackdemo:jetpack")) {
+                //写入文件
+                println("注解====TaskListenerInternal beforeExecute ${taskIdentity.name}" +
+                        " type=${taskIdentity.type} + identityPath=${taskIdentity.identityPath}")
+//                writeNavFile()
+            } else if (taskIdentity.name.startsWith("generateSafeArgsDebug")) {
+                println("注解====TaskListenerInternal else if beforeExecute ${taskIdentity.name}" +
+                        " type=${taskIdentity.type} + identityPath=${taskIdentity.identityPath}")
+            }
+
+        }
+
+        @Override
+        void afterExecute(TaskIdentity<?> taskIdentity, TaskState taskState) {
+            //
+        }
+    })
+
     project.gradle.addListener(new TaskActionListener() {
         @Override
         void beforeActions(Task task) {
-            if (task.name.startsWith("compile")
-                    && task.name.endsWith("Kotlin")) {
-                //写入文件
-                println("注解====TaskActionListener afterActions ${task.name}")
-                writeNavFile()
-            }
+
         }
         @Override
         void afterActions(Task task) {
+            if (task.name.equals("packageDebug")) {
+                //写入文件
+                println("注解====TaskActionListener afterActions ${task.name}")
+                //适配safe-args，插件执行顺序：safe-args(generateSafeArgsDebug)->annotation->writeNavFile->safe-args(generateSafeArgsDebug)
+                writeNavFile()
+                def process = "./gradlew generateSafeArgsDebug".execute()
+                println "Found text ${process.text}"
+            }
 //            if (task.name.startsWith("compile")
 //                    && task.name.endsWith("Kotlin")) {
 //                //写入文件
 //                println("注解====TaskActionListener afterActions ${task.name}")
 //                writeNavFile()
+////                def process = "./gradlew cmdTask".execute()
+////                "./gradlew generateDebugResValues".execute()
+////                "./gradlew generateDebugResources".execute()
+////                "./gradlew mergeDebugResources".execute()
+////                def process = "./gradlew generateSafeArgsDebug".execute()
+////                println "Found text ${process.text}"
 //            }
         }
     })

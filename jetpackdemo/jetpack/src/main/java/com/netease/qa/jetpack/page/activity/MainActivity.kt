@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.TextView
 import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.NavHostFragment
 import com.netease.qa.jetpack.R
 import com.netease.qa.jetpack.Utils
 
@@ -29,6 +30,11 @@ class MainActivity : AppCompatActivity() {
         nextTv = findViewById(R.id.tv_next)
         fragmentContainerView = findViewById(R.id.fragment_container)
 
+        val myNavHostFragment: NavHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        val inflater = myNavHostFragment.navController.navInflater
+        val graph = inflater.inflate(R.navigation.all_graph_navigation)
+        myNavHostFragment.navController.graph = graph
+
         preTv.setOnClickListener {
             if (pos != 0) {
                 pos--
@@ -49,6 +55,7 @@ class MainActivity : AppCompatActivity() {
                 1 -> {
                     pos++
                     Navigation.findNavController(this, R.id.fragment_container).navigate(R.id.to_score_fragment)
+                    Log.i("next===","id1===${R.id.to_score_fragment}")
                 }
                 else -> {
 

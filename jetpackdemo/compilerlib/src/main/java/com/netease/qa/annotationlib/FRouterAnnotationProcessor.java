@@ -89,6 +89,7 @@ public class FRouterAnnotationProcessor extends AbstractProcessor {
 //        sb.append("fragment_arguments_argType").append(":").append(implAnnotation.fragment_arguments_argType()).append(",");
 //        sb.append("fragment_arguments_defaultValue").append(":").append(implAnnotation.fragment_arguments_defaultValue());
 
+        System.out.println("---------------startDestination="+implAnnotation.startDestination()+"---------------------");
         addKeyAndValue(sb, "startDestination", implAnnotation.startDestination(), false);
         addKeyAndValue(sb, "action_id", implAnnotation.action_id(), false);
         addKeyAndValue(sb, "action_destination", implAnnotation.action_destination(), false);

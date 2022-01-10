@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  * API类注解
  */
 @Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.CLASS)
 //@Documented
 //@Inherited
 public @interface FRouterClass {

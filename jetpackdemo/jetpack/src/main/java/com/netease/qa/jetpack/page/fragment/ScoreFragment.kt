@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.chrc.annotalib.FRouterClass
 import com.netease.qa.jetpack.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -17,6 +18,10 @@ private const val ARG_PARAM2 = "param2"
  * Use the [ScoreFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@FRouterClass(
+        action_id = "to_score_fragment",
+        action_destination = "scoreFragment",
+        fragment_id = "scoreFragment")
 class ScoreFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null

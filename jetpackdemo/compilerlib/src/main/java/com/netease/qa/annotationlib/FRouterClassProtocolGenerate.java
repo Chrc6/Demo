@@ -48,9 +48,7 @@ public class FRouterClassProtocolGenerate {
             writer.flush();
             writer.close();
         } catch (IOException e) {
-//            error(proxyInfo.getTypeElement(),
-//                    "Unable to write injector for type %s: %s",
-//                    proxyInfo.getTypeElement(), e.getMessage());
+            System.out.println("注解处理器运行...............createJavaFile e=" + e.fillInStackTrace());
         }
     }
 

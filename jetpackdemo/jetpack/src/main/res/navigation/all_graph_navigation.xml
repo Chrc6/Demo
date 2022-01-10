@@ -1,24 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/titleFragment">
+<?xml version="1.0" encoding="UTF-8"?><navigation xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" android:id="@+id/plugin_graph" app:startDestination="@id/titleFragment">
 
-<action
-android:id="@+id/to_title_fragment"
-app:destination="@+id/titleFragment"
-/><fragment
-android:id="@+id/titleFragment"
-android:name="com.netease.qa.jetpack.page.fragment.TitleFragment"
-><argument 
-android:name="title"
-app:argType="string"
-android:defaultValue="test"
-/></fragment><action
-android:id="@+id/to_test_fragment"
-app:destination="@+id/testFragment"
-/><fragment
-android:id="@+id/testFragment"
-android:name="com.netease.qa.jetpack.page.fragment.TestFragment"
-></fragment>
+<action android:id="@+id/to_score_fragment" app:destination="@+id/scoreFragment"/>
+  <fragment android:id="@+id/scoreFragment" android:name="com.netease.qa.jetpack.page.fragment.ScoreFragment"/>
+  <action android:id="@+id/to_title_fragment" app:destination="@+id/titleFragment"/>
+  <fragment android:id="@+id/titleFragment" android:name="com.netease.qa.jetpack.page.fragment.TitleFragment">
+    <argument android:name="title" app:argType="string" android:defaultValue="test"/>
+  </fragment>
+  <action android:id="@+id/to_test_fragment" app:destination="@+id/testFragment"/>
+  <fragment android:id="@+id/testFragment" android:name="com.netease.qa.jetpack.page.fragment.TestFragment"/>
 </navigation>

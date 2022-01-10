@@ -13,12 +13,12 @@ import org.gradle.api.Task;
 class CreateFilePlugin implements Plugin<Project> {
     @Override
     public void apply(Project target) {
-//        target.task("CreateFileTask").doFirst(new Action<Task>() {
-//            @Override
-//            public void execute(Task task) {
-//                System.out.println("CreateFilePlugin");
-//            }
-//        });
+        target.task("CreateFileTask").doFirst(new Action<Task>() {
+            @Override
+            public void execute(Task task) {
+                System.out.println("CreateFilePlugin");
+            }
+        });
     }
 
 }

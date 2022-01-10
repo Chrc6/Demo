@@ -6,17 +6,18 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'kotlin-android-extensions'
-//    id 'androidx.navigation.safeargs'//https://blog.csdn.net/weixin_33974433/article/details/91455217  搜索SafeArgs
+    id 'androidx.navigation.safeargs'//https://blog.csdn.net/weixin_33974433/article/details/91455217  搜索SafeArgs
 //    id 'androidx.navigation.safeargs.kotlin'
     id 'com.chrc.dependency'
 }
 apply plugin: TestPlugin
-apply from: "../task.gradle"
+apply from: "../task_three.gradle"
+apply from: "../taskTest.gradle"
 
-apply plugin: 'lightning-compile'//lightning
-lightning {
-    enableTaskTimePrint = true
-}
+//apply plugin: 'lightning-compile'//lightning
+//lightning {
+//    enableTaskTimePrint = true
+//}
 
 android {
     compileSdkVersion 30

@@ -1,4 +1,4 @@
-package com.chrc.demo.util
+package com.chrc.kotlindemo
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions

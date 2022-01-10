@@ -1,0 +1,44 @@
+import groovy.json.JsonOutput
+import groovy.util.slurpersupport.GPathResult
+
+task threeParseNavXml {
+    //https://blog.csdn.net/Gaugamela/article/details/74809573
+    //各节点解析
+    def navigationFileDirPath = "${project.projectDir.absolutePath}/src/main/res/navigation"
+    def navigationXmlFile = "${navigationFileDirPath}/all_graph_navigation.xml"
+    //定义文件
+    def srcFile = new File(navigationXmlFile)
+    //定义对应的解析器
+    def xmlParser = new XmlSlurper()
+    //得到解析结果GPathResult
+    GPathResult gpathResult = xmlParser.parse(srcFile)
+//    println(" task parseNavXml gpathResult is null = ${gpathResult == null} result=${JsonOutput.toJson(gpathResult)}")
+
+    for (action in gpathResult.action) {
+        println " action = ${action.@'app:destination'}"
+    }
+
+    //GPathResult对应的其实就是整个Xml文件的根元素，即manifest
+    //获取某个属性的值时，利用@加上属性名即可
+    println gpathResult.@'package'
+
+//所有的子节点都是上一级节点的成员
+//这里就是打印manifest中所有uses-permission的值
+//注意这里包含符号-， 必须用''包裹属性
+    for (permission in gpathResult.'uses-permission') {
+        println permission.@'android:name'
+    }
+
+//打印application的属性
+    println gpathResult.application.@'android:icon'
+
+//activity是application的子节点
+    for (activity in gpathResult.application.activity) {
+        println " activity ${activity.@'android:name'}"
+    }
+
+//receiver也是application的子节点
+    for (receiver in gpathResult.application.receiver) {
+        println " receiver ${receiver.@'android:name'}"
+    }
+}
